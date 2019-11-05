@@ -1,0 +1,110 @@
+---
+title: "Voorbeeld berekening palingdensiteit"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Voorbeeld berekening palingdensiteit}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+#Inleiding
+
+Dit script zal op basis van een gesimuleerde dataset, de functies om de populatieschatting illustreren.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tidyverse)
+library(inbopvr)
+```
+
+
+#Aanmaken van de dataset
+
+Als basis voor de dataset vind ik zelf data uit voor 2 locaties over 3 jaar die 5 achtereenvolgende dagen bevist worden, waar er ongeveer 30 vissen per afvissing gevangen worden. Ik ga uit van een populatie van 200, 180 en 160 voor de eerste locatie, en een populatie van 150, 200 en 250 voor de tweede locatie. Omdat het telkens over een zeer korte periode van 5 dagen gaat, kan de populatie als gesloten beschouwd worden. Verder gaan we er ook vanuit dat we markeringen van een vorig jaar niet meer meetellen.
+
+Voor ieder jaar en locatie (group_by) wordt de data gesimuleerd via de functie `sim_multimark_density` welke een dataset geeft met als belangrijkste variabelen, de locatie, het jaar, de dag, de vangst op die dag en de hoeveelheid van deze vangst hervangsten waren. 
+
+```{r datageneratie}
+vangstdagen <- 5
+vangstgrootte <- 30
+df <- expand.grid(jaar = 1:3, locatie = 1:2) %>% 
+  mutate(N = c(200, 180 , 160, 150, 200, 250)) %>% 
+  group_by(jaar, locatie) %>% 
+  do ({
+    sim_multimark_density(Npop = .data$N, S = vangstgrootte, Ndates = vangstdagen, Nsim = 1, verbose = FALSE)
+    }) %>% 
+  select(jaar, locatie, dag = day, catch, recapture)
+
+```
+
+
+#Schatting van de populatie
+
+Om uit de vangstdata de populatie te schatten wordt de functie `multimark_popsize_iterative` gebruikt. Dit is een iteratieve methode, waarbij telkens met een nieuwe schatting de populatiegrootte herschat wordt met behulp van de functie `multimark_calcN` totdat een stopcriterium bereikt wordt. Het stopcriterium wordt bereikt als het verschil tussen de oude en nieuwe schatting kleiner dan 0.05 is.
+
+```{r berekeningen}
+Resultaat <-
+  df %>%
+  select(jaar, locatie, catch, recapture) %>%
+  group_by(jaar, locatie) %>%
+  do(multimark_popsize_iterative(.data, colnames = c("catch", "recapture"), plot = FALSE))
+
+print(Resultaat)
+
+ggplot(Resultaat, aes(x = jaar, y = N, ymin = lcl, ymax = ucl)) +
+  geom_line() + geom_errorbar() + facet_wrap(~locatie, scales = "free_y")
+```
+
+
+#Hoe meer vangstdagen hoe nauwkeuriger het stopcriterium
+
+## Spreiding op de geschatte populaties
+
+We gaan nu 200 vangstdatasets simuleren en zien hoe de nauwkeurigheid van de schatting toeneemt als er meer vangstdagen worden gebruikt. Hier gaan we weer uit van 30 vissen die telkens gevangen worden, op een populatie die op 200 gezet is (en ook eens op 100). Hoe kleiner de populatie ten opzichte van de vangst, hoe sneller een goede schatting wordt bereikt.
+
+```{r spreidingsimulaties}
+
+
+results <- sim_multimark_density(Npop = 200, Ndates = 10, S = 30, Nsim = 200)
+ggplot(results %>% filter(day %in% c(4,6,8)), aes(x = N_estim)) + geom_histogram() + facet_wrap(~day)
+
+
+
+```
+
+## Evolutie verbeterde schattingen
+
+```{r evolutie}
+
+evolutie <- sim_multimark_density(Npop = 200, Ndates = 20, S = 30, Nsim = 5) %>% 
+  mutate(iter = factor(iteration))
+ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
+
+```
+
+#caveat: De routine werkt niet als de populatie te klein wordt ten opzichte van de vangst
+
+Bij zeer lage populaties werkte de methode niet goed en zijn heel veel vangsten nodig om tot een goede populatieschatting te komen. Onder de 150 dieren krijg je een serieuze onderschatting.
+
+```{r probleem}
+
+result100 <- sim_multimark_density(Npop = 100, Ndates = 10, S = 30, Nsim = 200) %>% mutate(Nbase = 100)
+
+ggplot(result100 %>% filter(day %in% c(4,6,8)), aes(x = N_estim)) + geom_histogram() + facet_wrap(~day)
+
+evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 30, Nsim = 5) %>% 
+  mutate(iter = factor(iteration))
+ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
+
+
+evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 50, Nsim = 5) %>% 
+  mutate(iter = factor(iteration))
+ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
+
+```
