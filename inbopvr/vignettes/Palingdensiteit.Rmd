@@ -19,7 +19,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 library(inbopvr)
 ```
 
@@ -98,12 +100,12 @@ result100 <- sim_multimark_density(Npop = 100, Ndates = 10, S = 30, Nsim = 200) 
 
 ggplot(result100 %>% filter(day %in% c(4,6,8)), aes(x = N_estim)) + geom_histogram() + facet_wrap(~day)
 
-evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 30, Nsim = 5) %>% 
+evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 30, Nsim = 5, verbose = FALSE) %>% 
   mutate(iter = factor(iteration))
 ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
 
 
-evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 50, Nsim = 5) %>% 
+evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 50, Nsim = 5, verbose = FALSE) %>% 
   mutate(iter = factor(iteration))
 ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
 

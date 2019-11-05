@@ -16,6 +16,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Imports:
   dplyr,
-  purrr
+  purrr,
+  ggplot2,
+  tidyr
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr

@@ -8,13 +8,15 @@
 #' @param verbose indien TRUE toon op het scherm extra informatie over het verloop van het proces
 #' @return data.frame met per Nsim, per Ndates de vangstgrootte, de recaptures, en de geschatte populatie volgens de methode op basis van de informatie tot de respectievelijke vangstdag
 #' @export
+#' @importFrom stats rbinom
+#' @importFrom dplyr bind_rows
 #' @examples
-#' schattingen <- sim_palingdensity(Npop = 200, S = 30, Nsim = 100)
+#' schattingen <- sim_multimark_density(Npop = 200, S = 30, Nsim = 100)
 #' head(schattingen)
 #' hist(schattingen[schattingen$day == 5, "N_estim"], main = "", xlab = "estimation of N")
 #' abline(v = 200, col = "red", lwd = 3)
 #'
-sim_fishdensity <- function(Npop = 200, S = 30, Ndates = 5, Nsim = 200, verbose = TRUE, result_type = "estimates"){
+sim_multimark_density <- function(Npop = 200, S = 30, Ndates = 5, Nsim = 200, verbose = TRUE){
   prob = S / Npop
   calcdata <- NULL
   for (k in 1:Nsim) {
@@ -38,7 +40,7 @@ sim_fishdensity <- function(Npop = 200, S = 30, Ndates = 5, Nsim = 200, verbose 
     #Voer het optimalisatie-algoritme uit
     calcs <- numeric(length = Ndates)
     for (i in 2:Ndates) {
-      calcs[i] <- calcN(N = 200, catch = catch[1:i], recapture = recap[1:i])["N"]
+      calcs[i] <- multimark_calcN(N = 200, catch = catch[1:i], recapture = recap[1:i])["N"]
     }
     calcdata <- bind_rows(calcdata,
                           data.frame(iteration = k,

@@ -45,12 +45,12 @@ multimark_calcN <- function(N, catch, recapture){
 #' @return data.frame met 1 rij met de kolommen gespecifieerd in de parameter 'return'
 #' @export
 #' @examples{
-#' df <- data.frame(vangst = c(36, 31, 25, 34), hervangst = c( 0,  4,  7, 15))
+#' df <- data.frame(catch = c(36, 31, 25, 34), recapture = c( 0,  4,  7, 15))
 #' PopEstim <-
-#'calcMultimarkPopSizeIterative(data = df, multiplier = 1, plot = TRUE)
+#'multimark_popsize_iterative(data = df, multiplier = 1, plot = TRUE)
 #'PopEstim
 #'}
-multimark_popsize_iterative <- function(data, colnames = c("capture", "recapture"),
+multimark_popsize_iterative <- function(data, colnames = c("catch", "recapture"),
                                           max_iter = 100, multiplier = 2,
                                           plot = TRUE, return = c("N", "seN", "delta_N", "lcl", "ucl")){
   #check inputformaat
