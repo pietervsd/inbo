@@ -5,18 +5,20 @@
 \title{Simuleer een dataset met vangstgegevens om de palingdensiteitsberekening uit te voeren}
 \usage{
 sim_multimark_density(Npop = 200, S = 30, Ndates = 5, Nsim = 200,
-  verbose = TRUE)
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{Npop}{De echte populatiegrootte}
 
-\item{S}{Hoeveel vissen worden er gemiddeld per vangst gevangen}
+\item{S}{Hoeveel vissen worden er gemiddeld per vangst gevangen. Ofwel een vector met lengte 1, ofwel een vector met lengte \code{Ndates}}
 
 \item{Ndates}{Hoeveel dagen naëen vis je om de populatieschatting te verbeteren}
 
 \item{Nsim}{Hoeveel keer moet de routine opnieuw lopen om een zicht te krijgen op de variabiliteit van de schattingen}
 
-\item{verbose}{indien TRUE toon op het scherm extra informatie over het verloop van het proces}
+\item{verbose}{indien TRUE toon op het scherm extra informatie over het verloop van het proces zoals aan welke iteratie de procedure zit}
+
+\item{...}{argumenten die kunnen doorgegeven worden aan de door de routine opgeroepen functies \code{\link{multimark_calcN}} en\code{\link{multimark_popsize_iterative}}.}
 }
 \value{
 data.frame met per Nsim, per Ndates de vangstgrootte, de recaptures, en de geschatte populatie volgens de methode op basis van de informatie tot de respectievelijke vangstdag

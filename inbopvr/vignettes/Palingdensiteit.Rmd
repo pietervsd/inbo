@@ -74,9 +74,9 @@ We gaan nu 200 vangstdatasets simuleren en zien hoe de nauwkeurigheid van de sch
 
 
 results <- sim_multimark_density(Npop = 200, Ndates = 10, S = 30, Nsim = 200)
-ggplot(results %>% filter(day %in% c(4,6,8)), aes(x = N_estim)) + geom_histogram() + facet_wrap(~day)
-
-
+ggplot(results %>% filter(day %in% c(4,6,8)), aes(x = N_estim)) + 
+  geom_histogram(binwidth = 10) + 
+  facet_wrap(~day)
 
 ```
 
@@ -90,23 +90,48 @@ ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
 
 ```
 
-#caveat: De routine werkt niet als de populatie te klein wordt ten opzichte van de vangst
+#Wat gebeurt er bij kleine populaties of als de vangstgroottes dichtbij de populatiegroote liggen
 
-Bij zeer lage populaties werkte de methode niet goed en zijn heel veel vangsten nodig om tot een goede populatieschatting te komen. Onder de 150 dieren krijg je een serieuze onderschatting.
 
 ```{r probleem}
 
-result100 <- sim_multimark_density(Npop = 100, Ndates = 10, S = 30, Nsim = 200) %>% mutate(Nbase = 100)
+#populatie van 100 dieren met 30 gevangen dieren per vangst
+result100 <- sim_multimark_density(Npop = 100, Ndates = 20, S = 30, Nsim = 200)
 
-ggplot(result100 %>% filter(day %in% c(4,6,8)), aes(x = N_estim)) + geom_histogram() + facet_wrap(~day)
+ggplot(result100 %>% filter(day %in% c(4,6,8,10,15,20)), aes(x = N_estim)) + 
+  geom_histogram() + geom_vline(xintercept = 100, color = "red", size = 1) + 
+  facet_wrap(~day)
 
-evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 30, Nsim = 5, verbose = FALSE) %>% 
+evolutie100 <- sim_multimark_density(Npop = 100, Ndates = 20, S = 100, Nsim = 5, verbose = FALSE, multiplier = 2) %>% 
+  mutate(iter = factor(iteration)) %>% mutate(S = 100)
+
+evolutie050 <- sim_multimark_density(Npop = 100, Ndates = 20, S = 50, Nsim = 5, verbose = FALSE, multiplier = 2) %>% 
+  mutate(iter = factor(iteration)) %>% mutate(S = 50)
+
+evolutie030 <- sim_multimark_density(Npop = 100, Ndates = 20, S = 30, Nsim = 5, verbose = FALSE, multiplier = 2) %>% 
+  mutate(iter = factor(iteration)) %>% mutate(S = 30)
+
+evolutie010 <- sim_multimark_density(Npop = 100, Ndates = 20, S = 10, Nsim = 5, verbose = FALSE, multiplier = 2) %>% 
+  mutate(iter = factor(iteration)) %>% mutate(S = 10)
+
+evolutie <- bind_rows(evolutie010, evolutie030, evolutie050, evolutie100)
+ggplot(filter(evolutie, day > 1), aes(x = day, y = N_estim, color = iter)) + 
+  geom_line() + 
+  facet_wrap(~S, ncol = 1)
+
+
+
+evolutie30 <- sim_multimark_density(Npop = 100, Ndates = 20, S = 30, Nsim = 5, verbose = FALSE) %>% 
   mutate(iter = factor(iteration))
-ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
+ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line() + geom_hline(yintercept = 100) + 
+  ylab("Schatting voor vangstgrootte 30")
 
+#populatie van 100 dieren met 50 gevangen dieren per vangst
 
-evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 50, Nsim = 5, verbose = FALSE) %>% 
+#populatie van 100 dieren met 50 gevangen dieren per vangst
+evolutie <- sim_multimark_density(Npop = 100, Ndates = 20, S = 10, Nsim = 5, verbose = FALSE, multiplier = 10) %>% 
   mutate(iter = factor(iteration))
-ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line()
+ggplot(evolutie, aes(x = day, y = N_estim, color = iter)) + geom_line() + geom_hline(yintercept = 100) + 
+  ylab("Schatting voor vangstgrootte 10")
 
 ```
