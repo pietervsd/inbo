@@ -1,4 +1,4 @@
-Package: inbopvr
+Package: pvrutils
 Title: INBO R functions used in internal analyses or support (unofficial, not-validated)
 Version: 0.0.0.9000
 Authors@R: 
