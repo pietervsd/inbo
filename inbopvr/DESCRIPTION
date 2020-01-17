@@ -7,9 +7,17 @@ Authors@R:
              role = c("aut", "cre"),
              email = "pieter.verschelde@inbo.be",
              comment = c(ORCID = "0000-0002-9199-421X")))
-Description: A collection of some functions that where created as support for INBO scientists. This is a temporary repository before they are checked and integrated in the inborutils package
+Description: A collection of some functions that where created as support for INBO scientists. This is a temporary repository before they are checked and integrated in the inborutils package.
 License: GPL-3
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
+Imports:
+  dplyr,
+  purrr,
+  ggplot2,
+  tidyr
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
