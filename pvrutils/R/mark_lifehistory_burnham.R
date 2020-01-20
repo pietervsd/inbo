@@ -58,14 +58,14 @@ mark_lifehistory_burnham <- function(data, colnames = c("id", "date", "event", "
                             NA))
     rv[which(rv$id == wdata$id[i]), column] <- 1
   }
-  rv$Ch <- apply(rv[ , -(1:6), drop = FALSE], 1, paste, collapse = "")
+  rv$ch <- apply(rv[ , -(1:6), drop = FALSE], 1, paste, collapse = "")
   rv <- rv %>% 
-    select(.data$Ch, .data$group) %>%
-    group_by(.data$Ch, .data$group) %>% 
+    select(.data$ch, .data$group) %>%
+    group_by(.data$ch, .data$group) %>% 
     summarize(freq = n()) %>% 
     filter(!is.na(.data$freq) & .data$freq != 0) %>%
     ungroup() %>%
-    transmute(Ch = as.character(.data$Ch), freq = .data$freq, group = as.factor(.data$group))
+    transmute(ch = as.character(.data$ch), freq = .data$freq, group = as.factor(.data$group))
   as.data.frame(rv)
 }
 # 
