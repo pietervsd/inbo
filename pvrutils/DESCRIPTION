@@ -18,6 +18,7 @@ Imports:
   dplyr,
   purrr,
   ggplot2,
-  tidyr
+  tidyr,
+  lubridate
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
