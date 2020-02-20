@@ -4,8 +4,8 @@
 \alias{sim_individual}
 \title{Simulate a lifehistory for an individual with capture, recapture, resighting and ring recovery (close to Barker model)}
 \usage{
-sim_individual(ringyear, endyear, ring_age = 0, age_based = TRUE, S,
-  LL, LD, R, P)
+sim_individual(ringyear, endyear, ring_age = 0, age_based = FALSE, S,
+  p, r, R, Rprime, F = 1, Fprime = 0)
 }
 \arguments{
 \item{ringyear}{the year in the survey on which the animal is ringed}
@@ -14,17 +14,21 @@ sim_individual(ringyear, endyear, ring_age = 0, age_based = TRUE, S,
 
 \item{ring_age}{the age on which the animal is ringed}
 
-\item{age_based}{ig TRUE then the parameters will vary by age, otherwise they wil vary by time}
+\item{age_based}{named vector with names S, p, R, Rprime, F, Fprime that is TRUE when the model is age-based and FALSE when time-based, defaults to FALSE. When age_based is a simple logical constant, it is valid for all parameters}
 
-\item{S}{constant or vector containing the survival by year or age depending on paramter age_based}
+\item{S}{constant or vector with the probability an animals that lives at i remains alive at i + 1}
 
-\item{LL}{constant or vector containing the chance for a sighting between capture evens if the animal survives to the next year}
+\item{p}{constant or vector with the probability an animal at risk of capture at i is captured at i}
 
-\item{LD}{constant or vector containing the chance for a sighting between capture evens if the animal survives to the next year}
+\item{r}{constant or vector with that dies in i, i + 1 is found dead and the band reported}
 
-\item{R}{constant or vector containing the chance for a ring recovery if the animals dies between t and t+1}
+\item{R}{constant or vector with the probability an animal that survives from i to i + 1 is resighted (alive) some time between i and i + 1}
 
-\item{P}{constant or vector containing the chance for a recapture at t+1}
+\item{Rprime}{constant or vector with the probability an animal that dies over the interval from i to i + 1, without being found dead, is resighted alive in i, i + 1 before it died}
+
+\item{F}{constant or vector with the probability an animal at risk of capture at i is at risk of capture at i + 1}
+
+\item{Fprime}{constant or vector with the probability an animal not at risk of capture at i is at risk of capture at i + 1 (NB: this differs from the definition in Barker, 1997) #'}
 }
 \value{
 a lifehistory string for the aimal
@@ -35,9 +39,11 @@ The model assumes that there is a recapture event each fixed period t, t+1, t+2 
 \examples{
 endyear <- 10
 indivs <- expand.grid(Time = 1:1, Id = 1:50, Age = 0:0)
+#Burnham model: R, Rprime, Fprime = 0
 for (i in 1:nrow(indivs)) {
  indivs$ch[i] <-
-   sim_individual(ringyear = indivs$Time[i], endyear = endyear, ring_age = indivs$Age[i], age_based = TRUE,
-                  S = 0.7, LL = 0.0, LD = 0.0, R = 0.0, P = 0.8)
+   sim_individual(ringyear = indivs$Time[i], endyear = endyear,
+                  ring_age = indivs$Age[i], age_based = c(S = TRUE, p = TRUE),
+                  S = 0.7, p = 0.8, r = 0.2, R = 0.0, Rprime = 0.0, F = 1.0, Fprime = 0.0)
 }
 }
