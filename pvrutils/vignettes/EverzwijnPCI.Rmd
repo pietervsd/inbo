@@ -1,0 +1,108 @@
+---
+title: "Potentieel voor Conflict"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Potentieel voor Conflict}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ggplot2)
+library(dplyr)
+library(ggforce) #geom_circle
+library(pvrutils)
+```
+
+
+
+## Situering
+
+We willen het potentieel voor conflict onderzoeken op basis van een vragenlijst die verzonden wordt aan de betrokkenen, om om te gaan met een bepaalde situatie, bijvoorbeeld maatregelen om everzwijnschade in te perken.
+
+
+## Aanmaak dataset
+
+We maken een willekeurige dataset aan met 50 personen die 10 vragen krijgen en een score van slecht naar goed geven. Hier gebruiken we 5 opties waarbij de derde optie de neutrale optie is. We splitsen de ondervraagde personen ook op in 2 groepen, bijvoorbeeld landbouwers en jagers, om te onderzoeken of er verschillen zijn tussen deze groepen.
+
+```{r dataset}
+
+#Maak een willekeurige dataset aan
+#De functies gaan er vanuit dat zowel de vragen als groepen factorvariabelen zijn
+dataset <- expand.grid(persoon = 1:50, 
+                       groep = factor(c("groep 1", "groep2")),
+                       vraag = factor(1:10,
+                                      labels = paste("vraag nummer", 1:10))) %>%
+  mutate(response = sample(-2:2, size = nrow(.), replace = TRUE))
+
+```
+
+## Berekenen indices
+
+### Algemene gemiddelde en de algemene correspondentie
+
+```{r algemenecorrespondentie}
+pciresult_all <- 
+  dataset %>% 
+  group_by(vraag) %>%
+  summarize(meanAnswer = mean(response), pci2 = qd_pci2(response))
+
+pciresult_all
+```
+
+
+### Algemene gemiddelde en correspondentie binnen elke groep
+
+```{r pergroep}
+#Bereken het algemene gemiddelde en de algemene correspondentie maar nu binnen elke groep
+#let op: in dit geval wordt de pci herberekend per groep apart
+pciresult_by_group <- 
+  dataset %>% 
+  group_by(vraag, groep) %>%
+  summarize(meanAnswer = mean(response), pci2 = qd_pci2(response)) 
+
+pciresult_by_group
+```
+
+## In figuur zetten
+
+We gebruiken een schaalfactor om te zorgen dat de hoogte/breedte ratio van de figuur acceptabel blijft, omdat anders als je 20 vragen hebt dit numeriek omgezet wordt tussen 1 en 20, en aangezien je antwoordt tussen -2 en +2 ligt, en als je de cirkelvorm wilt behouden (daarom gebruiken we coord_fixed), dit een zeer langwerpige figuur wordt
+
+```{r figuuralgemeen}
+yfactor <- 1.5
+
+ggplot(pciresult_all) + 
+  geom_circle(aes(x0 = meanAnswer, y0 = as.numeric(vraag)/yfactor, r = pci2/2)) +
+  geom_point(aes(x = meanAnswer, y = as.numeric(vraag)/yfactor)) + 
+  scale_x_continuous(name = "gemiddeld antwoord",
+                     limits = c(-2,2)) + 
+  scale_y_continuous(name = "vraag", 
+                     breaks = unique(as.numeric(pciresult_all$vraag)/yfactor), 
+                     labels = levels(pciresult_all$vraag)) + 
+  coord_fixed()
+```
+
+
+```{r figuurpergroep}
+ggplot(pciresult_by_group) + 
+  geom_circle(aes(x0 = meanAnswer, y0 = as.numeric(vraag)/yfactor, 
+                  r  = pci2/2, fill = groep, color = groep), 
+              alpha = 0.3) +
+  geom_point(aes(x = meanAnswer, y = as.numeric(vraag)/yfactor, color = groep)) + 
+  scale_x_continuous(name = "gemiddeld antwoord",
+                     limits = c(-2,2)) + 
+  scale_y_continuous(name = "vraag",
+                     breaks = unique(as.numeric(pciresult_by_group$vraag)/yfactor),
+                     labels = levels(pciresult_by_group$vraag)) + 
+  scale_fill_discrete(name = "Overeenkomst") + 
+  scale_color_discrete(name = "Overeenkomst") + 
+  coord_fixed()
+```

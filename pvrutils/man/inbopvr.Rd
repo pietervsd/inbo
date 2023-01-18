@@ -4,3 +4,6 @@
 \name{inbopvr}
 \alias{inbopvr}
 \title{\code{inbopvr} package}
+\description{
+Pakket die enkele functies voor verschillende projecten combineert. Voorlopig gaat dit over de PCI index voor everzwijnen en enkele populatiemodelleringsfuncties.
+}

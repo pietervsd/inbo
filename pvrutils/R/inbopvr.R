@@ -1,6 +1,7 @@
 
 #' \code{inbopvr} package
 #'
+#'Pakket die enkele functies voor verschillende projecten combineert. Voorlopig gaat dit over de PCI index voor everzwijnen en enkele populatiemodelleringsfuncties.
 #' @docType package
 #' @name inbopvr
 #' @importFrom dplyr %>%
