@@ -4,9 +4,12 @@
 \alias{mark_lifehistory_burnham}
 \title{Omzetting naar Burnham LD (Chapter 9.2 in Mark book)}
 \usage{
-mark_lifehistory_burnham(data, colnames = c("id", "date", "event",
-  "group"), names_event = c("ringing", "liverecovery", "deadrecovery"),
-  dates_event)
+mark_lifehistory_burnham(
+  data,
+  colnames = c("id", "date", "event", "group"),
+  names_event = c("ringing", "liverecovery", "deadrecovery"),
+  dates_event
+)
 }
 \arguments{
 \item{data}{dataset met de nodige gegevens, met tenminste een identificatiekolom, een datumkolom (numeriek), een kolom met de state (bijvoorbeeld leeftijd bij ringen) en een kolom die het event beschrijft (ring aanbrengen, levend gezien, dood gevonden)}

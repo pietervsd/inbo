@@ -4,8 +4,19 @@
 \alias{sim_individual}
 \title{Simulate a lifehistory for an individual with capture, recapture, resighting and ring recovery (close to Barker model)}
 \usage{
-sim_individual(ringyear, endyear, ring_age = 0, age_based = FALSE, S,
-  p, r, R, Rprime, F = 1, Fprime = 0)
+sim_individual(
+  ringyear,
+  endyear,
+  ring_age = 0,
+  age_based = FALSE,
+  S,
+  p,
+  r,
+  R,
+  Rprime,
+  F = 1,
+  Fprime = 0
+)
 }
 \arguments{
 \item{ringyear}{the year in the survey on which the animal is ringed}

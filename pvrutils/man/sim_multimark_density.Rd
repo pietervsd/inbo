@@ -4,8 +4,14 @@
 \alias{sim_multimark_density}
 \title{Simuleer een dataset met vangstgegevens om de palingdensiteitsberekening uit te voeren}
 \usage{
-sim_multimark_density(Npop = 200, S = 30, Ndates = 5, Nsim = 200,
-  verbose = FALSE, ...)
+sim_multimark_density(
+  Npop = 200,
+  S = 30,
+  Ndates = 5,
+  Nsim = 200,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{Npop}{De echte populatiegrootte}

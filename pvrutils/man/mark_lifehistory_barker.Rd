@@ -4,9 +4,12 @@
 \alias{mark_lifehistory_barker}
 \title{Omzetten naar Barker LD (Chapter 9.5 in mark handleiding)}
 \usage{
-mark_lifehistory_barker(data, colnames = c("id", "date", "event",
-  "group"), names_event = c("ringing", "liverecovery", "sighting",
-  "deadrecovery"), dates_event)
+mark_lifehistory_barker(
+  data,
+  colnames = c("id", "date", "event", "group"),
+  names_event = c("ringing", "liverecovery", "sighting", "deadrecovery"),
+  dates_event
+)
 }
 \arguments{
 \item{data}{dataset met de nodige gegevens, met tenminste een identificatiekolom, een datumkolom (numeriek), een kolom met de state (bijvoorbeeld leeftijd bij ringen) en een kolom die het event beschrijft (ring aanbrengen, levend gezien, dood gevonden)}

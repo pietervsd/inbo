@@ -4,8 +4,7 @@
 \alias{convert_date_to_custom_year}
 \title{Convert date to a year that does not start with the first of january}
 \usage{
-convert_date_to_custom_year(date, start_month = 3,
-  start_day_in_month = 1)
+convert_date_to_custom_year(date, start_month = 3, start_day_in_month = 1)
 }
 \arguments{
 \item{date}{the date as an unambiguous character or POSIXct vector}

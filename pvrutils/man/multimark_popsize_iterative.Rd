@@ -4,9 +4,14 @@
 \alias{multimark_popsize_iterative}
 \title{Schatting populatie N voor multiple capture mark recapture}
 \usage{
-multimark_popsize_iterative(data, colnames = c("catch", "recapture"),
-  max_iter = 100, multiplier = 2, plot = TRUE, return = c("N",
-  "seN", "delta_N", "lcl", "ucl"))
+multimark_popsize_iterative(
+  data,
+  colnames = c("catch", "recapture"),
+  max_iter = 100,
+  multiplier = 2,
+  plot = TRUE,
+  return = c("N", "seN", "delta_N", "lcl", "ucl")
+)
 }
 \arguments{
 \item{data}{dataset die de kolommen bevat die onder 'colnames' staan}

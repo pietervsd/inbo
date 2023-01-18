@@ -3,8 +3,4 @@
 \docType{package}
 \name{inbopvr}
 \alias{inbopvr}
-\alias{inbopvr-package}
 \title{\code{inbopvr} package}
-\description{
-\code{inbopvr} package
-}

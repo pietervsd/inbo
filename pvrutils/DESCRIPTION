@@ -13,12 +13,10 @@ Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.1
 Imports:
   dplyr,
-  purrr,
-  ggplot2,
-  tidyr,
-  lubridate
+  lubridate,
+  purrr
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
